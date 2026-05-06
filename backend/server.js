@@ -15,10 +15,14 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/projects', require('./routes/projects'));
-app.use('/api/tasks', require('./routes/tasks'));
-app.use('/api/dashboard', require('./routes/dashboard'));
+const apiRouter = express.Router();
+apiRouter.use('/auth', require('./routes/auth'));
+apiRouter.use('/projects', require('./routes/projects'));
+apiRouter.use('/tasks', require('./routes/tasks'));
+apiRouter.use('/dashboard', require('./routes/dashboard'));
+
+app.use('/api', apiRouter);
+app.use('/', apiRouter); // Fallback for Vercel if it strips the /api prefix
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'Ethara PM API is running 🚀' }));
